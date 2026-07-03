@@ -1,6 +1,7 @@
 package com.robisa693.exactstacks;
 
 import javax.inject.Inject;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -16,11 +17,14 @@ public class StackBreakdownPlugin extends Plugin
     private OverlayManager overlayManager;
 
     @Inject
+    private ItemManager itemManager;
+
     private StackBreakdownOverlay overlay;
 
     @Override
     protected void startUp()
     {
+        overlay = new StackBreakdownOverlay(itemManager);
         overlayManager.add(overlay);
     }
 

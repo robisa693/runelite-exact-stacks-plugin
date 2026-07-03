@@ -9,7 +9,7 @@ public class DenominationFormatter
     private static final long MILLION = 1_000_000L;
     private static final long THOUSAND = 1_000L;
 
-    public static List<String> format(int quantity, boolean coinItem)
+    public static List<String> format(long quantity, boolean coinItem)
     {
         List<String> parts = new ArrayList<>(4);
         if (quantity <= 0)
@@ -17,7 +17,7 @@ public class DenominationFormatter
             return parts;
         }
 
-        long remaining = quantity & 0xFFFFFFFFL;
+        long remaining = quantity;
 
         if (remaining >= BILLION)
         {
@@ -29,14 +29,14 @@ public class DenominationFormatter
         if (remaining >= MILLION)
         {
             long m = remaining / MILLION;
-            parts.add(m + "m");
+            parts.add(m + "M");
             remaining %= MILLION;
         }
 
         if (remaining >= THOUSAND)
         {
             long k = remaining / THOUSAND;
-            parts.add(k + "k");
+            parts.add(k + "K");
             remaining %= THOUSAND;
         }
 

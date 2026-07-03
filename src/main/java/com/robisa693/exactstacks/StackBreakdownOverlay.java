@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
-import javax.inject.Inject;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.game.ItemManager;
@@ -15,13 +14,12 @@ import net.runelite.client.ui.overlay.components.TextComponent;
 
 class StackBreakdownOverlay extends WidgetItemOverlay
 {
-    private final StackBreakdownConfig config;
+    private static final Color GREEN = new Color(0, 254, 130);
+
     private final ItemManager itemManager;
 
-    @Inject
-    StackBreakdownOverlay(StackBreakdownConfig config, ItemManager itemManager)
+    StackBreakdownOverlay(ItemManager itemManager)
     {
-        this.config = config;
         this.itemManager = itemManager;
         showOnInventory();
     }
@@ -29,52 +27,42 @@ class StackBreakdownOverlay extends WidgetItemOverlay
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem)
     {
-        if (config.coinsOnly() && itemId != ItemID.COINS)
+        var comp = itemManager.getItemComposition(itemId);
+        if (comp == null || !comp.isStackable())
         {
             return;
         }
 
-        if (!config.coinsOnly())
-        {
-            var comp = itemManager.getItemComposition(itemId);
-            if (comp == null || !comp.isStackable())
-            {
-                return;
-            }
-        }
-
-        int quantity = widgetItem.getQuantity();
-        if (quantity <= 1)
+        long quantity = widgetItem.getQuantity();
+        if (quantity < 100_000)
         {
             return;
         }
 
         List<String> lines = DenominationFormatter.format(quantity, itemId == ItemID.COINS);
-        if (lines.isEmpty())
+        if (lines.size() <= 1)
         {
             return;
         }
+        lines = lines.subList(1, lines.size());
 
         graphics.setFont(FontManager.getRunescapeSmallFont());
 
         Rectangle bounds = widgetItem.getCanvasBounds();
-        Color color = config.textColor();
+        var fontMetrics = graphics.getFontMetrics();
+        int lineHeight = fontMetrics.getHeight() - 2;
+        int leftEdge = bounds.x;
+        int baseline = bounds.y + fontMetrics.getAscent() + 8;
 
-        int lineHeight = graphics.getFontMetrics().getHeight();
-        int totalHeight = lines.size() * lineHeight;
-        int startY = bounds.y + bounds.height - 4;
-
-        for (int i = lines.size() - 1; i >= 0; i--)
+        for (String line : lines)
         {
-            String line = lines.get(i);
-
             TextComponent text = new TextComponent();
             text.setText(line);
-            text.setColor(color);
-            text.setPosition(new Point(bounds.x + bounds.width - 2, startY));
+            text.setColor(line.endsWith("M") ? GREEN : Color.WHITE);
+            text.setPosition(new Point(leftEdge, baseline));
             text.render(graphics);
 
-            startY -= lineHeight;
+            baseline += lineHeight;
         }
     }
 }
