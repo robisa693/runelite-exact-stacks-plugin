@@ -22,8 +22,8 @@ class StackBreakdownOverlay extends WidgetItemOverlay
     {
         this.config = config;
         this.itemManager = itemManager;
-        showOnInventory();
-        showOnBank();
+        if (config.showInventory()) showOnInventory();
+        if (config.showBank()) showOnBank();
     }
 
     @Override
