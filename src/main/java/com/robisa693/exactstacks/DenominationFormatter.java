@@ -5,26 +5,18 @@ import java.util.List;
 
 public class DenominationFormatter
 {
-    private static final long BILLION = 1_000_000_000L;
     private static final long MILLION = 1_000_000L;
     private static final long THOUSAND = 1_000L;
 
-    public static List<String> format(long quantity, boolean coinItem)
+    public static List<String> format(long quantity)
     {
-        List<String> parts = new ArrayList<>(4);
+        List<String> parts = new ArrayList<>(3);
         if (quantity <= 0)
         {
             return parts;
         }
 
         long remaining = quantity;
-
-        if (remaining >= BILLION)
-        {
-            long b = remaining / BILLION;
-            parts.add(b + "b");
-            remaining %= BILLION;
-        }
 
         if (remaining >= MILLION)
         {
@@ -42,7 +34,7 @@ public class DenominationFormatter
 
         if (remaining > 0)
         {
-            parts.add(remaining + (coinItem ? "gp" : ""));
+            parts.add(String.valueOf(remaining));
         }
 
         return parts;

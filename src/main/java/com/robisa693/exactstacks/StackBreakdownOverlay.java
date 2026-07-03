@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
-import net.runelite.api.ItemID;
+
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.FontManager;
@@ -41,7 +41,7 @@ class StackBreakdownOverlay extends WidgetItemOverlay
             return;
         }
 
-        List<String> lines = DenominationFormatter.format(quantity, itemId == ItemID.COINS);
+        List<String> lines = DenominationFormatter.format(quantity);
         if (lines.size() <= 1)
         {
             return;
@@ -51,7 +51,7 @@ class StackBreakdownOverlay extends WidgetItemOverlay
         List<String> filtered = new ArrayList<>(lines.size());
         for (String line : lines)
         {
-            if (line.endsWith("M") || line.endsWith("b"))
+            if (line.endsWith("M"))
             {
                 continue;
             }
@@ -72,7 +72,7 @@ class StackBreakdownOverlay extends WidgetItemOverlay
         var fontMetrics = graphics.getFontMetrics();
         int lineHeight = fontMetrics.getHeight() - 2;
         int leftEdge = bounds.x;
-        int baseline = bounds.y + fontMetrics.getAscent() + 8;
+        int baseline = bounds.y + fontMetrics.getAscent() + 9;
 
         for (String line : filtered)
         {
