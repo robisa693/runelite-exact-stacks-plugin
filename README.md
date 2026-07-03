@@ -1,5 +1,7 @@
 # Exact Stacks
 
+<img src="icon.png" alt="Exact Stacks icon" width="130">
+
 RuneLite plugin that shows exact stackable item quantities broken down by denomination. Instead of seeing only the game's rounded value (e.g. "39m"), your inventory and bank slots show the remaining breakdown at a glance.
 
 ## Features
