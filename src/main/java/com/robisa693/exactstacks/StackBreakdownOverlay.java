@@ -42,6 +42,11 @@ class StackBreakdownOverlay extends WidgetItemOverlay
         }
 
         List<String> lines = DenominationFormatter.format(quantity, itemId == ItemID.COINS);
+        if (lines.size() <= 1)
+        {
+            return;
+        }
+        lines = lines.subList(1, lines.size());
 
         List<String> filtered = new ArrayList<>(lines.size());
         for (String line : lines)
