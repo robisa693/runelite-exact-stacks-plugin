@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.List;
 import net.runelite.api.ItemID;
 import net.runelite.api.widgets.WidgetItem;
@@ -14,14 +15,15 @@ import net.runelite.client.ui.overlay.components.TextComponent;
 
 class StackBreakdownOverlay extends WidgetItemOverlay
 {
-    private static final Color GREEN = new Color(0, 254, 130);
-
+    private final StackBreakdownConfig config;
     private final ItemManager itemManager;
 
-    StackBreakdownOverlay(ItemManager itemManager)
+    StackBreakdownOverlay(StackBreakdownConfig config, ItemManager itemManager)
     {
+        this.config = config;
         this.itemManager = itemManager;
         showOnInventory();
+        showOnBank();
     }
 
     @Override
@@ -46,6 +48,24 @@ class StackBreakdownOverlay extends WidgetItemOverlay
         }
         lines = lines.subList(1, lines.size());
 
+        List<String> filtered = new ArrayList<>(lines.size());
+        for (String line : lines)
+        {
+            if (line.endsWith("M") || line.endsWith("b"))
+            {
+                continue;
+            }
+            if (!line.endsWith("K") && !config.showLessThanK())
+            {
+                continue;
+            }
+            filtered.add(line);
+        }
+        if (filtered.isEmpty())
+        {
+            return;
+        }
+
         graphics.setFont(FontManager.getRunescapeSmallFont());
 
         Rectangle bounds = widgetItem.getCanvasBounds();
@@ -54,11 +74,11 @@ class StackBreakdownOverlay extends WidgetItemOverlay
         int leftEdge = bounds.x;
         int baseline = bounds.y + fontMetrics.getAscent() + 8;
 
-        for (String line : lines)
+        for (String line : filtered)
         {
             TextComponent text = new TextComponent();
             text.setText(line);
-            text.setColor(line.endsWith("M") ? GREEN : Color.WHITE);
+            text.setColor(Color.WHITE);
             text.setPosition(new Point(leftEdge, baseline));
             text.render(graphics);
 
