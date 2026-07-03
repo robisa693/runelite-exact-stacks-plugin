@@ -3,6 +3,8 @@ package com.robisa693.exactstacks;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -43,5 +45,21 @@ public class StackBreakdownPlugin extends Plugin
     protected void shutDown()
     {
         overlayManager.remove(overlay);
+    }
+
+    @Subscribe
+    public void onConfigChanged(ConfigChanged event)
+    {
+        if (!event.getGroup().equals("exactstacks"))
+        {
+            return;
+        }
+
+        if (event.getKey().equals("showInventory") || event.getKey().equals("showBank"))
+        {
+            overlayManager.remove(overlay);
+            overlay = new StackBreakdownOverlay(config, itemManager);
+            overlayManager.add(overlay);
+        }
     }
 }
