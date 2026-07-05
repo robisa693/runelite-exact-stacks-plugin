@@ -41,20 +41,11 @@ class StackBreakdownOverlay extends WidgetItemOverlay
             return;
         }
 
-        List<String> lines = DenominationFormatter.format(quantity);
-        if (lines.size() <= 1)
-        {
-            return;
-        }
-        lines = lines.subList(1, lines.size());
+        List<String> lines = DenominationFormatter.remainderLines(quantity);
 
         List<String> filtered = new ArrayList<>(lines.size());
         for (String line : lines)
         {
-            if (line.endsWith("M"))
-            {
-                continue;
-            }
             if (!line.endsWith("K") && !config.showLessThanK())
             {
                 continue;

@@ -8,33 +8,37 @@ public class DenominationFormatter
     private static final long MILLION = 1_000_000L;
     private static final long THOUSAND = 1_000L;
 
-    public static List<String> format(long quantity)
+    // Game display tiers: exact below 100K, "xK" from 100K, "xM" from 10M
+    private static final long K_DISPLAY_THRESHOLD = 100 * THOUSAND;
+    private static final long M_DISPLAY_THRESHOLD = 10 * MILLION;
+
+    /**
+     * Returns the denomination lines the game's rounded stack display hides.
+     * The game shows the exact quantity below 100K (nothing to add),
+     * thousands ("5250K") from 100K (only the sub-K units are hidden),
+     * and millions ("39M") from 10M (the K and sub-K remainder is hidden).
+     */
+    public static List<String> remainderLines(long quantity)
     {
-        List<String> parts = new ArrayList<>(3);
-        if (quantity <= 0)
+        List<String> parts = new ArrayList<>(2);
+        if (quantity < K_DISPLAY_THRESHOLD)
         {
             return parts;
         }
 
-        long remaining = quantity;
-
-        if (remaining >= MILLION)
+        if (quantity >= M_DISPLAY_THRESHOLD)
         {
-            long m = remaining / MILLION;
-            parts.add(m + "M");
-            remaining %= MILLION;
+            long k = (quantity % MILLION) / THOUSAND;
+            if (k > 0)
+            {
+                parts.add(k + "K");
+            }
         }
 
-        if (remaining >= THOUSAND)
+        long units = quantity % THOUSAND;
+        if (units > 0)
         {
-            long k = remaining / THOUSAND;
-            parts.add(k + "K");
-            remaining %= THOUSAND;
-        }
-
-        if (remaining > 0)
-        {
-            parts.add(String.valueOf(remaining));
+            parts.add(String.valueOf(units));
         }
 
         return parts;
