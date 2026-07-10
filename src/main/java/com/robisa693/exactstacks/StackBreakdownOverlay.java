@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.runelite.api.widgets.WidgetItem;
-import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -16,12 +15,10 @@ import net.runelite.client.ui.overlay.components.TextComponent;
 class StackBreakdownOverlay extends WidgetItemOverlay
 {
     private final StackBreakdownConfig config;
-    private final ItemManager itemManager;
 
-    StackBreakdownOverlay(StackBreakdownConfig config, ItemManager itemManager)
+    StackBreakdownOverlay(StackBreakdownConfig config)
     {
         this.config = config;
-        this.itemManager = itemManager;
         if (config.showInventory()) showOnInventory();
         if (config.showBank()) showOnBank();
     }
@@ -29,12 +26,6 @@ class StackBreakdownOverlay extends WidgetItemOverlay
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem)
     {
-        var comp = itemManager.getItemComposition(itemId);
-        if (comp == null || !comp.isStackable())
-        {
-            return;
-        }
-
         long quantity = widgetItem.getQuantity();
         if (quantity < 100_000)
         {
