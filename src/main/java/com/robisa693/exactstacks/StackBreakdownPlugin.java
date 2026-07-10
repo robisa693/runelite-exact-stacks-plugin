@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
-import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -23,9 +22,6 @@ public class StackBreakdownPlugin extends Plugin
     @Inject
     private StackBreakdownConfig config;
 
-    @Inject
-    private ItemManager itemManager;
-
     private StackBreakdownOverlay overlay;
 
     @Provides
@@ -37,7 +33,7 @@ public class StackBreakdownPlugin extends Plugin
     @Override
     protected void startUp()
     {
-        overlay = new StackBreakdownOverlay(config, itemManager);
+        overlay = new StackBreakdownOverlay(config);
         overlayManager.add(overlay);
     }
 
@@ -58,7 +54,7 @@ public class StackBreakdownPlugin extends Plugin
         if (event.getKey().equals("showInventory") || event.getKey().equals("showBank"))
         {
             overlayManager.remove(overlay);
-            overlay = new StackBreakdownOverlay(config, itemManager);
+            overlay = new StackBreakdownOverlay(config);
             overlayManager.add(overlay);
         }
     }
