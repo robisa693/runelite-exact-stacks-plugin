@@ -36,4 +36,14 @@ public interface StackBreakdownConfig extends Config
     {
         return true;
     }
+
+    @ConfigItem(
+        keyName = "hideMaxStack",
+        name = "Hide max stack sentinel",
+        description = "Fix for inventory setups compatibility."
+    )
+    default boolean hideMaxStack()
+    {
+        return true;
+    }
 }
