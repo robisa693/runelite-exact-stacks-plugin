@@ -26,7 +26,16 @@ class StackBreakdownOverlay extends WidgetItemOverlay
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem)
     {
+        if (itemId == -1)
+        {
+            return;
+        }
+
         long quantity = widgetItem.getQuantity();
+        if (config.hideMaxStack() && quantity == Integer.MAX_VALUE)
+        {
+            return;
+        }
         if (quantity < 100_000)
         {
             return;
